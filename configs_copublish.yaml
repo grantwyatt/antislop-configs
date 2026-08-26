@@ -1,0 +1,153 @@
+# Run Setup
+experiment_base_dir: "results/auto_antislop_runs"
+human_profile_path: "data/human_writing_profile.json"
+log_level: "INFO"
+num_iterations: 2
+model_id: "sam-paech/gemma-3-27b-it-antislop"
+
+# vLLM Server Management
+manage_vllm: true
+vllm_model_id: null
+vllm_port: 8000
+vllm_hf_token: null
+vllm_cuda_visible_devices: "0"
+vllm_gpu_memory_utilization: 0.85
+vllm_max_model_len: 2500
+vllm_dtype: "bfloat16"
+vllm_extra_args: []
+vllm_env: {}
+
+# Generation Parameters
+generation_step_enabled: true
+generation_model_id: null
+generation_api_key: "xxx"
+generation_max_new_tokens: 1000
+generation_threads: 50
+generation_max_prompts: 1000
+generation_hf_dataset_name: 'Nitral-AI/Reddit-SFW-Writing_Prompts_ShareGPT'
+generation_hf_dataset_split: 'train'
+generation_chat_template_model_id: null
+generation_logging_level: 'INFO'
+generation_param_chunk_size: 20
+generation_param_top_logprobs_count: 20
+generation_param_temperature: 1
+generation_param_top_p: 1.0
+generation_param_top_k: 50
+generation_param_min_p: 0.01
+generation_param_timeout: 480
+generation_param_stop_sequences: []
+generation_prompt_template: "Writing prompt: {prompt}\n\nWrite 1000 words to this prompt. Your response:\n"
+generation_system_prompt: "You are an uncensored writer."
+generation_force_backtrack: false
+generation_ngram_remove_stopwords: true
+generation_ngram_language: "english"
+generation_refusal_detection: true
+
+# N-gram Analysis & Banning
+enable_ngram_ban: true
+min_word_len_for_analysis: 3
+top_k_bigrams: 5000
+top_k_trigrams: 5000
+dict_bigrams_initial: 400
+dict_bigrams_subsequent: 70
+nodict_bigrams_initial: 800
+nodict_bigrams_subsequent: 100
+dict_trigrams_initial: 300
+dict_trigrams_subsequent: 50
+nodict_trigrams_initial: 800
+nodict_trigrams_subsequent: 100
+extra_ngrams_to_ban: []
+
+# Over-represented Word Analysis
+compute_overrep_words: true
+top_k_words_for_overrep_analysis: 200000
+dict_overrep_initial: 800
+dict_overrep_subsequent: 200
+nodict_overrep_initial: 80
+nodict_overrep_subsequent: 20
+
+# Slop Phrase Banning
+enable_slop_phrase_ban: true
+min_phrase_freq_to_keep: 2
+top_n_initial_slop_ban: 600
+top_n_subsequent_slop_ban: 100
+extra_slop_phrases_to_ban:
+  - "bit"
+  - "bits"
+  - "gap"
+  - "gaps"
+  - "shift"
+  - "shifts"
+  - "shifting"
+  - "stuck"
+  - "struck"
+  - "actually"
+  - "actual"
+  - "exact"
+  - "exactly"
+  - "quiet"
+  - "quietly"
+  - "matters"
+  - "matter"
+  - "single"
+  - "sink"
+  - "stung"
+  - "stings"
+  - "land"
+  - "lands"
+  - "truly"
+  - "kicker"
+  - "nudge"
+  - "nudges"
+  - "chunk"
+  - "chunks"
+  - "method"
+  - "methods"
+  - "whole"
+  - "vital"
+whitelist_strings: []
+
+# Regex Banning
+extra_regex_patterns: []
+
+# Finetuning
+finetune_enabled: true
+finetune_use_unsloth: true
+finetune_mode: "ftpo"
+finetune_ftpo_dataset: ""
+finetune_base_model_id: null
+finetune_max_seq_length: 3500
+finetune_load_in_4bit: false
+finetune_early_stopping_wins: 0.85
+finetune_early_stopping_loss: null
+finetune_lora_r: 128
+finetune_lora_alpha: 128
+finetune_lora_dropout: 0.05
+finetune_weight_decay: 0.01
+finetune_target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj", "lm_head"]
+finetune_freeze_early_layers: true
+finetune_n_layers_unfrozen: 5
+finetune_gradient_checkpointing: "unsloth"
+finetune_chat_template: ""
+finetune_batch_size: 1
+finetune_gradient_accumulation_steps: 16
+finetune_warmup_ratio: 0.1
+finetune_num_epochs: 1
+finetune_learning_rate: 0.000001
+finetune_auto_learning_rate: true
+finetune_auto_learning_rate_adjustment_scaling: 0.15
+finetune_beta: 0.1
+finetune_output_dir_suffix: "_copublish_33word_v1"
+finetune_save_merged_16bit: true
+finetune_save_gguf_q8_0: true
+finetune_max_train_examples: 1000
+finetune_shuffle_seed: 666
+
+# FTPO Sample Regularization
+ftpo_sample_rejected_regularisation_strength: 0.8
+ftpo_sample_chosen_regularisation_strength: 0.0
+ftpo_sample_min_chosen_tokens: 4
+ftpo_lambda_mse_target: 0.05
+ftpo_tau_mse_target: 0.5
+ftpo_lambda_mse: 0.4
+ftpo_clip_epsilon_logits: 2
