@@ -84,6 +84,22 @@ def main() -> None:
     model.save_pretrained(str(args.output), safe_serialization=True)
     tokenizer.save_pretrained(str(args.output))
 
+    # Gemma-3 is a vision-capable architecture -- vLLM auto-detects this
+    # from config.json and always tries to build an image processor for
+    # it at startup, even for a text-only run, and hard-fails if
+    # preprocessor_config.json isn't present (real failure 2026-09-03:
+    # "Can't load image processor for ...", OSError, at vLLM server
+    # startup -- this is a DIFFERENT spot than the similar Gemma-3
+    # vision-capability issue already hit during SFT training, which was
+    # worked around inside trl's SFTTrainer, not fixed at the model-
+    # directory level -- that fix doesn't cover this). AutoTokenizer/
+    # AutoModelForCausalLM above never touch this file, so it has to be
+    # pulled in separately. Lightweight -- config only, no model weights.
+    print("==> Saving processor config (image processor -- needed for vLLM's Gemma-3 multimodal auto-detection, even though this is text-only)")
+    from transformers import AutoProcessor
+    processor = AutoProcessor.from_pretrained(args.base_model)
+    processor.save_pretrained(str(args.output))
+
     print("==> Done. Sanity check before running FTPO:")
     print(f"    ls -la {args.output}")
     print("    (expect config.json, tokenizer files, and .safetensors shards)")
