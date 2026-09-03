@@ -90,6 +90,18 @@ echo "=== [3b/8] Bumping vLLM startup wait_timeout (720s -> 1440s) ==="
 sed -i 's/wait_timeout: int = 720/wait_timeout: int = 1440/' utils/vllm_manager.py
 grep -n "wait_timeout: int = " utils/vllm_manager.py
 
+echo "=== [3c/8] Removing a stale --disable-log-requests flag (vllm CLI drift) ==="
+# Real failure 2026-09-03: whatever vllm version "pip install vllm" grabs
+# now rejects this flag entirely ("unrecognized arguments"), crashing the
+# managed server on startup with exit code 2 before it ever gets to load
+# the model. auto-antislop's own code comment says this flag is purely
+# cosmetic ("Cleaner logs during generation"), not load-bearing, so it's
+# simply dropped here rather than chasing whatever the current vllm
+# release renamed it to -- safer against this recurring on a future vllm
+# release too.
+sed -i '/"--disable-log-requests",/d' utils/vllm_manager.py
+grep -n "disable-log-requests" utils/vllm_manager.py && echo "WARNING: still present" || echo "confirmed removed"
+
 echo "=== [4/8] venv ==="
 python3 -m venv venv
 source venv/bin/activate
