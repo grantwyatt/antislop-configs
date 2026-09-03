@@ -3,7 +3,18 @@ experiment_base_dir: "results/auto_antislop_runs"
 human_profile_path: "data/human_writing_profile.json"
 log_level: "INFO"
 num_iterations: 2
-model_id: "sam-paech/gemma-3-27b-it-antislop"
+# 2026-09-03: FTPO now runs on top of copublish's OWN SFT'd model (a LoRA
+# adapter trained locally via local-ai-gateway/sft.train.ps1, merged onto
+# the full-precision base by setup_runpod.sh's step [1/8] and [8/8]) --
+# NOT the stock sam-paech/gemma-3-27b-it-antislop. Per the 2026-08-29
+# reordering decision: SFT establishes voice first, FTPO strips remaining
+# tics from THAT result second. This is a local filesystem path on the
+# pod, not an HF repo id -- vLLM and transformers both load local paths
+# transparently, no special handling needed. vllm_model_id/
+# generation_model_id/finetune_base_model_id below are all null and
+# inherit this value automatically (see utils/config_loader.py's
+# defaulting loop in the auto-antislop repo).
+model_id: "/workspace/copublish_sft_merged"
 
 # vLLM Server Management
 manage_vllm: true
