@@ -155,7 +155,15 @@ else
 fi
 
 echo "=== [8/8] Merging the SFT adapter now that the environment is ready ==="
-python merge_sft_adapter.py \
+# Absolute path -- merge_sft_adapter.py was downloaded to /workspace in
+# step [1/8], but step [2/8]'s "cd auto-antislop" (and nothing since has
+# cd'd back) means the working directory here is /workspace/auto-antislop,
+# not /workspace. A bare "python merge_sft_adapter.py" failed with "No
+# such file or directory" for exactly this reason on the first real run
+# of this script (2026-09-03) -- fixed here rather than adding a cd,
+# since this is robust regardless of any future reordering of the steps
+# above.
+python /workspace/merge_sft_adapter.py \
   --adapter /workspace/copublish_sft_adapter \
   --output /workspace/copublish_sft_merged
 echo "Merged model at /workspace/copublish_sft_merged -- confirmed this is"
